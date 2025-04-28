@@ -1,0 +1,91 @@
+<view class="container">
+  <view class="summary">
+    <view class="income">
+      <text>收入</text>
+      <text class="amount">¥{{totalIncome}}</text>
+    </view>
+    <view class="expense">
+      <text>支出</text>
+      <text class="amount">¥{{totalExpense}}</text>
+    </view>
+  </view>
+
+  <!-- 筛选状态显示 -->
+  <view class="filter-status" bindtap="showFilterPanel">
+    <text wx:if="{{activeFilter === 'all'}}">全部账单</text>
+    <text wx:elif="{{activeFilter === 'year'}}">{{filterYear}}年</text>
+    <text wx:elif="{{activeFilter === 'month'}}">{{filterYear}}年{{filterMonth}}月</text>
+    <view class="filter-icon">📅</view>
+  </view>
+
+  <view class="record-list" wx:if="{{records.length > 0}}">
+    <block wx:for="{{records}}" wx:key="index">
+      <!-- 日期分组标题 -->
+      <view class="date-header" wx:if="{{index === 0 || records[index-1].date !== item.date}}">
+        <text class="date">{{item.formattedDate}}</text>
+      </view>
+      
+      <view class="record-item {{item.type}}">
+        <view class="left">
+          <view class="category-container">
+            <view class="icon">{{categoryIcons[item.type][item.category]}}</view>
+            <text class="category">{{item.category}}</text>
+          </view>
+          <text class="time">{{item.date}}</text>
+        </view>
+        <view class="right">
+          <text class="amount">{{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}</text>
+          <text class="delete" bindtap="deleteRecord" data-index="{{index}}">删除</text>
+        </view>
+      </view>
+    </block>
+  </view>
+  
+  <view class="empty-state" wx:if="{{records.length === 0}}">
+    <view class="empty-icon">📋</view>
+    <text class="empty-text">{{activeFilter === 'all' ? '暂无记录' : '筛选条件下暂无记录'}}</text>
+    <text class="empty-subtext" wx:if="{{activeFilter === 'all'}}">点击底部"+"添加一笔新账单</text>
+    <text class="empty-subtext" wx:else bindtap="clearFilter">点击此处清除筛选条件</text>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view class="filter-panel-container" wx:if="{{showFilter}}">
+    <view class="filter-panel-mask" bindtap="hideFilterPanel"></view>
+    <view class="filter-panel">
+      <view class="filter-panel-header">
+        <text>筛选账单</text>
+        <text class="close" bindtap="hideFilterPanel">×</text>
+      </view>
+      
+      <view class="filter-section">
+        <view class="filter-section-title">按年份筛选</view>
+        <view class="filter-options">
+          <view class="filter-option {{activeFilter === 'all' ? 'active' : ''}}" bindtap="clearFilter">全部</view>
+          <view wx:for="{{years}}" wx:key="*this" 
+                class="filter-option {{filterYear === item && activeFilter !== 'month' ? 'active' : ''}}" 
+                bindtap="selectYear" 
+                data-year="{{item}}">
+            {{item}}年
+          </view>
+        </view>
+      </view>
+      
+      <view class="filter-section" wx:if="{{filterYear}}">
+        <view class="filter-section-title">按月份筛选</view>
+        <view class="filter-options">
+          <view class="filter-option {{activeFilter === 'year' ? 'active' : ''}}" 
+                bindtap="selectYear" 
+                data-year="{{filterYear}}">
+            全年
+          </view>
+          <view wx:for="{{months}}" wx:key="*this" 
+                class="filter-option {{filterMonth === item && activeFilter === 'month' ? 'active' : ''}}" 
+                bindtap="selectMonth" 
+                data-month="{{item}}">
+            {{item}}月
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

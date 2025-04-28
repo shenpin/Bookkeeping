@@ -1,0 +1,308 @@
+.container {
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 类型选择器 */
+.type-selector {
+  display: flex;
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+}
+
+.type-option {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.type-option.active {
+  color: #36b37e;
+  font-weight: 500;
+}
+
+.type-option.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  background-color: #36b37e;
+  border-radius: 2rpx;
+}
+
+/* 筛选器相关样式 */
+.filter-bar {
+  background: #fff;
+  padding: 20rpx;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+}
+
+.current-filter {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #36b37e;
+  padding: 10rpx 20rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 30rpx;
+  background-color: #f9f9f9;
+}
+
+.filter-icon {
+  font-size: 20rpx;
+  margin-left: 10rpx;
+  color: #999;
+}
+
+.filter-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filter-header {
+  background: #fff;
+  width: 100%;
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.filter-header text {
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.filter-close {
+  font-size: 40rpx;
+  color: #999;
+}
+
+.filter-content {
+  background: #fff;
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-bottom: 50rpx; /* Safe area for iPhoneX */
+}
+
+.filter-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.filter-section {
+  padding: 20rpx 30rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
+.filter-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.year-option {
+  padding: 15rpx 25rpx;
+  background: #f0f0f0;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.year-option.active {
+  background: #36b37e;
+  color: #fff;
+}
+
+.filter-months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.month-option {
+  padding: 15rpx 25rpx;
+  background: #f0f0f0;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.month-option.active {
+  background: #36b37e;
+  color: #fff;
+}
+
+.option-check {
+  color: #36b37e;
+  font-weight: bold;
+}
+
+/* 摘要区域 */
+.summary {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+  text-align: center;
+}
+
+.total text:first-child {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.total .amount {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #36b37e;
+}
+
+/* 饼图区域 */
+.pie-chart-container {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+}
+
+.pie-chart {
+  width: 100%;
+  height: 500rpx;
+}
+
+/* 分类列表 */
+.category-list {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+  margin-bottom: 20rpx;
+}
+
+.category-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  margin: 10rpx 0 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.category-item:last-child {
+  border-bottom: none;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+}
+
+.color-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+}
+
+.icon {
+  font-size: 28rpx;
+  margin-right: 10rpx;
+}
+
+.name {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.category-data {
+  display: flex;
+  align-items: center;
+}
+
+.percentage {
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 16rpx;
+}
+
+.amount {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  background: #fff;
+  border-radius: 12rpx;
+  margin-top: 20rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 10rpx;
+}
+
+.empty-subtext {
+  font-size: 28rpx;
+  color: #999;
+}

@@ -1,0 +1,110 @@
+<view class="container">
+  <view class="type-selector">
+    <view class="type-option {{activeType === 'expense' ? 'active' : ''}}" bindtap="switchToExpense">
+      <text>支出统计</text>
+    </view>
+    <view class="type-option {{activeType === 'income' ? 'active' : ''}}" bindtap="switchToIncome">
+      <text>收入统计</text>
+    </view>
+  </view>
+
+  <!-- 时间筛选器 -->
+  <view class="filter-bar">
+    <view class="current-filter" bindtap="showFilterPanel">
+      <text wx:if="{{activeFilter === 'all'}}">全部时间</text>
+      <text wx:elif="{{activeFilter === 'year'}}">{{filterYear}}年</text>
+      <text wx:elif="{{activeFilter === 'month'}}">{{filterYear}}年{{filterMonth}}月</text>
+      <view class="filter-icon">▼</view>
+    </view>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view class="filter-panel" wx:if="{{showFilter}}">
+    <view class="filter-header">
+      <text>选择时间范围</text>
+      <view class="filter-close" bindtap="hideFilterPanel">×</view>
+    </view>
+    <view class="filter-content">
+      <view class="filter-option" bindtap="clearFilter">
+        <text>全部时间</text>
+        <view class="option-check" wx:if="{{activeFilter === 'all'}}">✓</view>
+      </view>
+      <view class="filter-section">
+        <view class="section-title">按年份</view>
+        <view class="filter-years">
+          <view class="year-option {{filterYear === year && activeFilter === 'year' ? 'active' : ''}}" 
+                wx:for="{{years}}" 
+                wx:for-item="year" 
+                wx:key="*this" 
+                data-year="{{year}}" 
+                bindtap="selectYear">
+            {{year}}
+          </view>
+        </view>
+      </view>
+      <view class="filter-section" wx:if="{{filterYear}}">
+        <view class="section-title">按月份</view>
+        <view class="filter-months">
+          <view class="month-option {{filterMonth === month && activeFilter === 'month' ? 'active' : ''}}" 
+                wx:for="{{months}}" 
+                wx:for-item="month" 
+                wx:key="*this" 
+                data-month="{{month}}" 
+                bindtap="selectMonth">
+            {{month}}月
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="summary">
+    <view class="total">
+      <text>{{activeType === 'expense' ? '总支出' : '总收入'}}</text>
+      <text class="amount">¥{{activeType === 'expense' ? totalExpense : totalIncome}}</text>
+    </view>
+  </view>
+
+  <!-- 饼图区域 -->
+  <view class="pie-chart-container">
+    <canvas canvas-id="pieChart" class="pie-chart"></canvas>
+  </view>
+
+  <!-- 图例和数据明细 -->
+  <view class="category-list">
+    <view class="category-title">{{activeType === 'expense' ? '支出' : '收入'}}分类明细</view>
+    <block wx:if="{{activeType === 'expense'}}">
+      <view class="category-item" wx:for="{{expenseCategoriesArray}}" wx:key="name">
+        <view class="category-info">
+          <view class="color-dot" style="background-color: {{item.color}}"></view>
+          <text class="icon">{{item.icon}}</text>
+          <text class="name">{{item.name}}</text>
+        </view>
+        <view class="category-data">
+          <text class="percentage">{{item.percentage}}%</text>
+          <text class="amount">¥{{item.value}}</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="category-item" wx:for="{{incomeCategoriesArray}}" wx:key="name">
+        <view class="category-info">
+          <view class="color-dot" style="background-color: {{item.color}}"></view>
+          <text class="icon">{{item.icon}}</text>
+          <text class="name">{{item.name}}</text>
+        </view>
+        <view class="category-data">
+          <text class="percentage">{{item.percentage}}%</text>
+          <text class="amount">¥{{item.value}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 无数据提示 -->
+  <view class="empty-state" wx:if="{{(activeType === 'expense' && expenseCategoriesArray.length === 0) || (activeType === 'income' && incomeCategoriesArray.length === 0)}}">
+    <view class="empty-icon">📊</view>
+    <text class="empty-text">暂无{{activeType === 'expense' ? '支出' : '收入'}}数据</text>
+    <text class="empty-subtext">添加一些记录来查看统计数据</text>
+  </view>
+</view> 

@@ -1,0 +1,75 @@
+<view class="container">
+  <view class="form-item">
+    <text>类型</text>
+    <view class="type-selector">
+      <view class="type-option {{type === 'expense' ? 'active' : ''}}" bindtap="setTypeExpense">
+        <view class="circle {{type === 'expense' ? 'active' : ''}}"></view>
+        <text>支出</text>
+      </view>
+      <view class="type-option {{type === 'income' ? 'active' : ''}}" bindtap="setTypeIncome">
+        <view class="circle {{type === 'income' ? 'active' : ''}}"></view>
+        <text>收入</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-item">
+    <text>金额</text>
+    <input type="digit" placeholder="请输入金额" bindinput="bindAmountInput" value="{{amount}}" />
+  </view>
+
+  <view class="form-item category-form-item">
+    <text>分类</text>
+    <view class="picker" bindtap="showCategoryPicker">
+      <view class="category-item">
+        <view wx:if="{{category !== ''}}" class="category-icon">{{categoryIcons[type][categories[type][category]]}}</view>
+        <text>{{category ? categories[type][category] : '请选择分类'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-item">
+    <text>日期</text>
+    <view class="date-picker" bindtap="showDatePickerPopup">
+      <text>{{date}}</text>
+    </view>
+  </view>
+
+  <!-- 自定义日期选择器弹窗 -->
+  <view class="date-picker-container" wx:if="{{showDatePicker}}">
+    <picker-view class="picker" indicator-style="height: 50px; background-color: rgba(54, 179, 126, 0.1);" bindchange="bindDateChange" value="{{datePickerValue}}">
+      <picker-view-column>
+        <view wx:for="{{years}}" wx:key="*this" style="line-height: 50px; text-align: center;">{{item}}年</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view wx:for="{{months}}" wx:key="*this" style="line-height: 50px; text-align: center;">{{item}}月</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view wx:for="{{days}}" wx:key="*this" style="line-height: 50px; text-align: center;">{{item}}日</view>
+      </picker-view-column>
+    </picker-view>
+    <button class="confirm-btn" bindtap="confirmDate">确认</button>
+  </view>
+
+  <!-- 自定义分类选择器 -->
+  <view class="category-picker-container" wx:if="{{showCategoryPicker}}">
+    <view class="category-picker-mask" bindtap="hideCategoryPicker"></view>
+    <view class="category-picker-content">
+      <view class="category-picker-header">
+        <text>选择分类</text>
+      </view>
+      <view class="category-picker-list">
+        <view class="category-picker-item" 
+              wx:for="{{categories[type]}}" 
+              wx:key="*this" 
+              bindtap="selectCategory" 
+              data-index="{{index}}">
+          <view class="category-icon">{{categoryIcons[type][item]}}</view>
+          <text>{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <button class="submit-btn" bindtap="submit">保存</button>
+</view> 
