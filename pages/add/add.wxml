@@ -22,8 +22,8 @@
     <text>分类</text>
     <view class="picker" bindtap="showCategoryPicker">
       <view class="category-item">
-        <view wx:if="{{category !== ''}}" class="category-icon">{{categoryIcons[type][categories[type][category]]}}</view>
-        <text>{{category ? categories[type][category] : '请选择分类'}}</text>
+        <view class="category-icon">{{categoryIcons[type][categories[categoryIndex]]}}</view>
+        <text>{{categories[categoryIndex] || '请选择分类'}}</text>
       </view>
     </view>
   </view>
@@ -33,6 +33,11 @@
     <view class="date-picker" bindtap="showDatePickerPopup">
       <text>{{date}}</text>
     </view>
+  </view>
+
+  <view class="form-item">
+    <text>备注</text>
+    <input type="text" name="remark" placeholder="添加备注（选填）" value="{{remark}}" maxlength="50" bindinput="bindRemarkInput" />
   </view>
 
   <!-- 自定义日期选择器弹窗 -->
@@ -60,13 +65,34 @@
       </view>
       <view class="category-picker-list">
         <view class="category-picker-item" 
-              wx:for="{{categories[type]}}" 
+              wx:for="{{categories}}" 
               wx:key="*this" 
               bindtap="selectCategory" 
               data-index="{{index}}">
           <view class="category-icon">{{categoryIcons[type][item]}}</view>
           <text>{{item}}</text>
         </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 自定义分类输入弹窗 -->
+  <view class="custom-category-modal" wx:if="{{showCustomCategoryInput}}">
+    <view class="custom-category-mask" bindtap="cancelCustomCategory"></view>
+    <view class="custom-category-content">
+      <view class="custom-category-header">
+        <text>输入自定义分类</text>
+      </view>
+      <view class="custom-category-body">
+        <input type="text" 
+               placeholder="请输入分类名称" 
+               value="{{customCategory}}" 
+               bindinput="bindCustomCategoryInput"
+               maxlength="10" />
+      </view>
+      <view class="custom-category-footer">
+        <button class="cancel-btn" bindtap="cancelCustomCategory">取消</button>
+        <button class="confirm-btn" bindtap="confirmCustomCategory">确定</button>
       </view>
     </view>
   </view>

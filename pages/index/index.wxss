@@ -283,3 +283,106 @@
   color: #36b37e;
   font-weight: 500;
 }
+
+/* 账单详情弹窗 */
+.record-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.record-detail-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.record-detail-content {
+  position: relative;
+  width: 80%;
+  max-width: 600rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.record-detail-header {
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-detail-header text {
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.record-detail-header .close {
+  font-size: 40rpx;
+  color: #999;
+  padding: 0 20rpx;
+}
+
+.record-detail-body {
+  padding: 30rpx;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-item .label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.detail-item .value {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.detail-item .value.expense {
+  color: #ff5630;
+}
+
+.detail-item .value.income {
+  color: #36b37e;
+}
+
+.detail-item .value.category {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.detail-item .value.remark {
+  color: #666;
+  max-width: 400rpx;
+  text-align: right;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.detail-item .value.remark.empty {
+  color: #999;
+  font-style: italic;
+}

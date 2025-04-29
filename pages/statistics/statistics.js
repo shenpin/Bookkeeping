@@ -264,15 +264,18 @@ Page({
   processCategories: function (categories, total) {
     let result = [];
     let index = 0;
-
+    const type = this.data.activeType;
     for (const [name, value] of Object.entries(categories)) {
       const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
       // 获取对应的图标
       const icon =
         this.data.activeType === "expense"
-          ? this.data.categoryIcons.expense[name] || "📊"
-          : this.data.categoryIcons.income[name] || "📊";
-
+          ? this.data.categoryIcons.expense[name] ||
+            this.data.categoryIcons.expense["其他"] ||
+            "📊"
+          : this.data.categoryIcons.income[name] ||
+            this.data.categoryIcons.income["其他"] ||
+            "📊";
       result.push({
         name: name,
         icon: icon, // 添加图标
@@ -282,10 +285,8 @@ Page({
       });
       index++;
     }
-
     // 按金额降序排序
     result.sort((a, b) => parseFloat(b.value) - parseFloat(a.value));
-
     return result;
   },
 

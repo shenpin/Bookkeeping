@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/add/add",
-    "pages/statistics/statistics"
+    "pages/statistics/statistics",
+    "pages/budget/budget"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -26,6 +27,10 @@
       {
         "pagePath": "pages/statistics/statistics",
         "text": "统计"
+      },
+      {
+        "pagePath": "pages/budget/budget",
+        "text": "预算"
       }
     ]
   },

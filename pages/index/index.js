@@ -12,6 +12,8 @@ Page({
     years: [], // 可选年份列表
     months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], // 月份列表
     activeFilter: "all", // 当前筛选状态：all, year, month
+    showRecordDetail: false, // 控制账单详情显示
+    currentRecord: null, // 当前查看的账单记录
     categoryIcons: {
       income: {
         工资: "💰",
@@ -77,7 +79,7 @@ Page({
     const formattedRecords = records.map((record) => {
       const date = new Date(record.date);
       return {
-        ...record,
+        ...record, // 保留所有原始字段，包括remark
         formattedDate: this.formatDate(record.date),
         year: date.getFullYear(),
         month: date.getMonth() + 1,
@@ -214,5 +216,38 @@ Page({
 
     // 重新加载记录并应用筛选条件
     this.loadAllRecords();
+  },
+
+  // 显示账单详情
+  showRecordDetail: function (e) {
+    const record = e.currentTarget.dataset.record;
+    console.log("账单详情数据:", record); // 添加调试日志
+
+    // 确保record对象包含所有必要字段
+    if (record) {
+      // 检查是否是自定义分类（不在预定义分类列表中的分类）
+      const isCustomCategory =
+        !this.data.categoryIcons[record.type][record.category];
+
+      this.setData({
+        showRecordDetail: true,
+        currentRecord: {
+          ...record,
+          remark: record.remark || "", // 确保remark字段存在
+          // 如果是自定义分类，使用"其他"分类的图标
+          categoryIcon: isCustomCategory
+            ? this.data.categoryIcons[record.type]["其他"]
+            : this.data.categoryIcons[record.type][record.category],
+        },
+      });
+    }
+  },
+
+  // 隐藏账单详情
+  hideRecordDetail: function () {
+    this.setData({
+      showRecordDetail: false,
+      currentRecord: null,
+    });
   },
 });

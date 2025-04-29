@@ -4,12 +4,13 @@ Page({
   data: {
     type: "expense",
     amount: "",
-    category: "",
+    categoryIndex: 0,
+    categories: [],
     date: "",
-    categories: {
-      income: ["工资", "奖金", "兼职", "其他"],
-      expense: ["餐饮", "交通", "购物", "娱乐", "住房", "医疗", "其他"],
-    },
+    maxDate: "",
+    remark: "",
+    showCustomCategoryInput: false, // 控制自定义分类输入框显示
+    customCategory: "", // 存储自定义分类名称
     categoryIcons: {
       income: {
         工资: "💰",
@@ -42,6 +43,24 @@ Page({
   },
 
   onLoad: function () {
+    // 设置最大日期为今天
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    this.setData({
+      maxDate: `${year}-${month}-${day}`,
+      date: `${year}-${month}-${day}`,
+    });
+
+    // 初始化分类
+    this.setData({
+      categories:
+        this.data.type === "expense"
+          ? Object.keys(this.data.categoryIcons.expense)
+          : Object.keys(this.data.categoryIcons.income),
+    });
+
     // 初始化日期选择器数据
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -70,7 +89,6 @@ Page({
       selectedYear: currentYear,
       selectedMonth: currentMonth,
       selectedDay: currentDay,
-      date: this.formatDate(now),
       currentYear,
       currentMonth,
       currentDay,
@@ -267,11 +285,20 @@ Page({
 
   bindCategoryChange: function (e) {
     this.setData({
-      category: e.detail.value,
+      categoryIndex: e.detail.value,
     });
   },
 
+  // 添加备注输入处理函数
+  bindRemarkInput: function (e) {
+    this.setData({
+      remark: e.detail.value,
+    });
+  },
+
+  // 提交表单
   submit: function () {
+    // 表单验证
     if (!this.data.amount) {
       wx.showToast({
         title: "请输入金额",
@@ -280,7 +307,18 @@ Page({
       return;
     }
 
-    if (this.data.category === "") {
+    if (isNaN(this.data.amount) || parseFloat(this.data.amount) <= 0) {
+      wx.showToast({
+        title: "请输入有效金额",
+        icon: "none",
+      });
+      return;
+    }
+
+    if (
+      this.data.categoryIndex === undefined ||
+      this.data.categoryIndex === null
+    ) {
       wx.showToast({
         title: "请选择分类",
         icon: "none",
@@ -288,37 +326,68 @@ Page({
       return;
     }
 
-    const record = {
+    // 如果选择了"其他"分类，但没有输入自定义分类名称
+    if (
+      this.data.categories[this.data.categoryIndex] === "其他" &&
+      !this.data.customCategory.trim()
+    ) {
+      wx.showToast({
+        title: "请输入自定义分类名称",
+        icon: "none",
+      });
+      return;
+    }
+
+    // 创建新记录
+    const newRecord = {
       type: this.data.type,
       amount: parseFloat(this.data.amount).toFixed(2),
-      category: this.data.categories[this.data.type][this.data.category],
+      category:
+        this.data.categories[this.data.categoryIndex] === "其他"
+          ? this.data.customCategory
+          : this.data.categories[this.data.categoryIndex],
       date: this.data.date,
+      remark: this.data.remark || "",
+      timestamp: new Date().getTime(),
     };
 
-    // 输出调试信息，查看记录详情
-    console.log("准备提交的记录:", {
-      type: this.data.type,
-      amount: this.data.amount,
-      categoryIndex: this.data.category,
-      categoryValue: this.data.categories[this.data.type][this.data.category],
-      date: this.data.date,
-    });
+    // 获取现有记录
+    const records = app.globalData.records || [];
 
-    const records = app.globalData.records;
-    records.unshift(record);
+    // 添加新记录
+    records.unshift(newRecord);
+
+    // 更新全局数据
     app.globalData.records = records;
+
+    // 保存到本地存储
     wx.setStorageSync("records", records);
 
-    wx.showToast({
-      title: "添加成功",
-      icon: "success",
-    });
+    // 显示保存成功提示
+    wx.showModal({
+      title: "保存成功",
+      content: "账单已成功保存",
+      showCancel: false,
+      success: (res) => {
+        if (res.confirm) {
+          // 清空表单数据
+          this.setData({
+            amount: "",
+            categoryIndex: 0,
+            remark: "",
+            customCategory: "",
+            showCustomCategoryInput: false,
+            // 保持当前日期不变
+            // 保持当前类型不变
+          });
 
-    setTimeout(() => {
-      wx.switchTab({
-        url: "/pages/index/index",
-      });
-    }, 1500);
+          // 延迟返回上一页
+          setTimeout(() => {
+            wx.navigateBack();
+          }, 500);
+        }
+      },
+    });
   },
 
   // 显示分类选择器
@@ -338,20 +407,50 @@ Page({
   // 选择分类
   selectCategory: function (e) {
     const index = e.currentTarget.dataset.index;
-    console.log("选择的分类索引:", index);
-    console.log("分类名称:", this.data.categories[this.data.type][index]);
+    const selectedCategory = this.data.categories[index];
 
-    if (index === undefined || index === null) {
+    if (selectedCategory === "其他") {
+      this.setData({
+        showCustomCategoryInput: true,
+        categoryIndex: index,
+      });
+    } else {
+      this.setData({
+        categoryIndex: index,
+        showCustomCategoryInput: false,
+        customCategory: "",
+      });
+    }
+  },
+
+  // 处理自定义分类输入
+  bindCustomCategoryInput: function (e) {
+    this.setData({
+      customCategory: e.detail.value,
+    });
+  },
+
+  // 确认自定义分类
+  confirmCustomCategory: function () {
+    if (!this.data.customCategory.trim()) {
       wx.showToast({
-        title: "分类选择错误",
+        title: "请输入分类名称",
         icon: "none",
       });
       return;
     }
 
     this.setData({
-      category: index,
-      showCategoryPicker: false,
+      showCustomCategoryInput: false,
+    });
+  },
+
+  // 取消自定义分类
+  cancelCustomCategory: function () {
+    this.setData({
+      showCustomCategoryInput: false,
+      customCategory: "",
+      categoryIndex: 0,
     });
   },
 
@@ -359,7 +458,8 @@ Page({
   setTypeExpense: function () {
     this.setData({
       type: "expense",
-      category: "", // 重置分类选择
+      categoryIndex: 0,
+      categories: Object.keys(this.data.categoryIcons.expense),
     });
   },
 
@@ -367,7 +467,26 @@ Page({
   setTypeIncome: function () {
     this.setData({
       type: "income",
-      category: "", // 重置分类选择
+      categoryIndex: 0,
+      categories: Object.keys(this.data.categoryIcons.income),
+    });
+  },
+
+  // 切换到支出
+  switchToExpense: function () {
+    this.setData({
+      type: "expense",
+      categoryIndex: 0,
+      categories: Object.keys(this.data.categoryIcons.expense),
+    });
+  },
+
+  // 切换到收入
+  switchToIncome: function () {
+    this.setData({
+      type: "income",
+      categoryIndex: 0,
+      categories: Object.keys(this.data.categoryIcons.income),
     });
   },
 });

@@ -25,17 +25,17 @@
         <text class="date">{{item.formattedDate}}</text>
       </view>
       
-      <view class="record-item {{item.type}}">
+      <view class="record-item {{item.type}}" bindtap="showRecordDetail" data-record="{{item}}">
         <view class="left">
           <view class="category-container">
-            <view class="icon">{{categoryIcons[item.type][item.category]}}</view>
+            <view class="icon">{{categoryIcons[item.type][item.category] ? categoryIcons[item.type][item.category] : categoryIcons[item.type]['其他']}}</view>
             <text class="category">{{item.category}}</text>
           </view>
           <text class="time">{{item.date}}</text>
         </view>
         <view class="right">
           <text class="amount">{{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}</text>
-          <text class="delete" bindtap="deleteRecord" data-index="{{index}}">删除</text>
+          <text class="delete" catchtap="deleteRecord" data-index="{{index}}">删除</text>
         </view>
       </view>
     </block>
@@ -84,6 +84,48 @@
                 data-month="{{item}}">
             {{item}}月
           </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 账单详情弹窗 -->
+  <view class="record-detail-modal" wx:if="{{showRecordDetail}}">
+    <view class="record-detail-mask" bindtap="hideRecordDetail"></view>
+    <view class="record-detail-content">
+      <view class="record-detail-header">
+        <text>账单详情</text>
+        <text class="close" bindtap="hideRecordDetail">×</text>
+      </view>
+      <view class="record-detail-body">
+        <view class="detail-item">
+          <text class="label">类型</text>
+          <text class="value">{{currentRecord.type === 'expense' ? '支出' : '收入'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">金额</text>
+          <text class="value {{currentRecord.type === 'expense' ? 'expense' : 'income'}}">
+            {{currentRecord.type === 'expense' ? '-' : '+'}}¥{{currentRecord.amount}}
+          </text>
+        </view>
+        <view class="detail-item">
+          <text class="label">分类</text>
+          <view class="value category">
+            <text class="icon">{{currentRecord.categoryIcon}}</text>
+            <text>{{currentRecord.category}}</text>
+          </view>
+        </view>
+        <view class="detail-item">
+          <text class="label">日期</text>
+          <text class="value">{{currentRecord.date}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{currentRecord.remark}}">
+          <text class="label">备注</text>
+          <text class="value remark">{{currentRecord.remark}}</text>
+        </view>
+        <view class="detail-item" wx:else>
+          <text class="label">备注</text>
+          <text class="value remark empty">暂无备注</text>
         </view>
       </view>
     </view>

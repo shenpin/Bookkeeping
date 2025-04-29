@@ -1,0 +1,57 @@
+<view class="container">
+  <!-- 月份选择器 -->
+  <view class="month-selector">
+    <picker mode="date" fields="month" value="{{selectedMonth}}" bindchange="onMonthChange">
+      <view class="month-picker">
+        <text>{{selectedMonth || '选择月份'}}</text>
+        <text class="icon">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 支出预算 -->
+  <view class="section">
+    <view class="section-title">支出预算</view>
+    <view class="budget-list">
+      <view class="budget-item" wx:for="{{expenseCategories}}" wx:key="name">
+        <view class="category-info">
+          <text class="icon">{{categoryIcons.expense[item] || '📊'}}</text>
+          <text class="name">{{item}}</text>
+        </view>
+        <view class="budget-edit-box">
+          <input 
+            class="budget-input" 
+            type="digit" 
+            value="{{editingValue[item] !== undefined ? editingValue[item] : (budgets.expense[item][selectedMonth] || '')}}" 
+            placeholder="设置预算" 
+            bindinput="onBudgetInput" 
+            data-category="{{item}}"
+          />
+          <text class="unit">元</text>
+        </view>
+      </view>
+    </view>
+    <view style="margin: 32rpx 0 0 0; text-align: center;">
+      <button class="budget-btn" style="width: 60%;" bindtap="saveAllBudgets">保存本月预算</button>
+    </view>
+  </view>
+
+  <!-- 预算使用情况 -->
+  <view class="section" wx:if="{{selectedMonth}}">
+    <view class="section-title">预算使用情况（{{selectedMonth}}）</view>
+    <view class="budget-usage">
+      <view class="usage-item" wx:for="{{budgetUsage}}" wx:key="category">
+        <view class="usage-info">
+          <text class="icon">{{item.icon}}</text>
+          <text class="name">{{item.category}}</text>
+        </view>
+        <view class="usage-data">
+          <text class="budget">预算: ¥{{item.budget || '未设置'}}</text>
+          <text class="actual">实际: ¥{{item.actual}}</text>
+          <text class="status {{item.status}}">{{item.statusText}}</text>
+        </view>
+      </view>
+      <view wx:if="{{budgetUsage.length === 0}}" class="empty-budget">本月未设置预算</view>
+    </view>
+  </view>
+</view> 
